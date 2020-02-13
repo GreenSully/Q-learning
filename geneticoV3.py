@@ -1,4 +1,6 @@
 """
+tuned 4x4
+
 approccio  genetico/q-learning
 
 l'agente impara col q-learning per num_training_episodes 
@@ -76,7 +78,7 @@ def crossover2(q_a,q_b):
                 nq_b[i]=q_a[i]
     return nq_a,nq_b
 
-env = gym.make('FrozenLake8x8-v0')
+env = gym.make('FrozenLake-v0')
 action_space_size=env.action_space.n
 state_space_size = env.observation_space.n
 
@@ -87,9 +89,9 @@ q_table[0]=q_table[1]
 print(q_table[0,:,:])
 
 num_generation=100
-num_training_episodes = 30000
+num_training_episodes = 10000
 num_test_episode=1000
-max_steps_per_episode = 500
+max_steps_per_episode = 1000
 
 learning_rate = 0.1
 discount_rate = 0.99
@@ -97,7 +99,7 @@ discount_rate = 0.99
 exploration_rate = 1
 max_exploration_rate = 1
 min_exploration_rate = 0.01
-exploration_decay_rate = 0.0001
+exploration_decay_rate = 0.01
 
 score=[]
 
