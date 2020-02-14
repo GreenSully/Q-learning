@@ -1,9 +1,8 @@
 """
-tuned 4x4
 
 approccio  genetico/q-learning
 
-l'agente impara col q-learning per num_training_episodes 
+l'agente impara col q-learning per num_training_episodes
 poi viene valutato su num_test_episodes
 
 scelta dei genitori stocastic beam search:
@@ -50,10 +49,10 @@ def select_parent2(score):
 def crossover(q_a,q_b):
     a,b=np.shape(q_a)
     c = random.randint(0,a*b-1)
-    
+
     nq_a=np.zeros((a,b))
     nq_b=np.zeros((a,b))
-    
+
     for i in range(0,a):
         for j in range(0,b):
             if (i*b+j) <c:
@@ -63,14 +62,14 @@ def crossover(q_a,q_b):
                 nq_a[i,j]=q_b[i,j]
                 nq_b[i,j]=q_a[i,j]
     return nq_a,nq_b
-    
+
 def crossover2(q_a,q_b):
     a,b=np.shape(q_a)
     c = random.randint(0,a-1)
-    
+
     nq_a=np.zeros((a,b))
     nq_b=np.zeros((a,b))
-    
+
     for i in range(0,a):
             if i<c:
                 nq_a[i]=q_a[i]
@@ -87,9 +86,6 @@ state_space_size = env.observation_space.n
 population_size=10
 
 q_table = np.random.rand(population_size,state_space_size, action_space_size)
-"""
-frozen4x4
-"""
 num_generation=20
 num_training_episodes = 5000
 num_test_episode=1000
@@ -120,14 +116,14 @@ for gen in range(num_generation):
             for step in range(max_steps_per_episode):
                 exploration_rate_threshold = random.uniform(0, 1)
                 if exploration_rate_threshold > exploration_rate:
-                    action = np.argmax(q_table[agent,state,:]) 
+                    action = np.argmax(q_table[agent,state,:])
                 else:
                     action = env.action_space.sample()
-                
+
                 new_state, reward, done, info = env.step(action)
                 q_table[agent,state, action] = q_table[agent,state, action] * (1 - learning_rate) + learning_rate * (reward + discount_rate * np.max(q_table[agent,new_state, :]))
                 state = new_state
-                if done == True: 
+                if done == True:
                     break
             exploration_rate = min_exploration_rate + (max_exploration_rate - min_exploration_rate) * np.exp(-exploration_decay_rate*episode)
     for agent in range(population_size):
@@ -136,19 +132,19 @@ for gen in range(num_generation):
             done = False
             rewards_current_episode = 0
             for step in range(max_steps_per_episode):
-                    
-                action = np.argmax(q_table[agent,state,:]) 
-                    
+
+                action = np.argmax(q_table[agent,state,:])
+
                 new_state, reward, done, info = env.step(action)
                 state = new_state
-                rewards_current_episode += reward 
-                if done == True: 
+                rewards_current_episode += reward
+                if done == True:
                     break
             if agent in rewards_all_episodes:
                 rewards_all_episodes[agent]=rewards_current_episode+rewards_all_episodes[agent]
             else:
                 rewards_all_episodes[agent]=rewards_current_episode
-        
+
     print(rewards_all_episodes)
     #crossover
     new_q_table=q_table.copy()
@@ -168,7 +164,7 @@ for gen in range(num_generation):
     if maxx>max_value:
         max_value=maxx
         index=gen
-    
+
 print(rewards_all_episodes)
 
 plt.ylim(0,1)
@@ -185,13 +181,13 @@ for episode in range(3):
     done = False
     print("*****EPISODE ", episode+1, "*****\n\n\n\n")
     time.sleep(1)
-    for step in range(max_steps_per_episode):        
+    for step in range(max_steps_per_episode):
         clear_output(wait=True)
         env.render()
         time.sleep(0.3)
-        action = np.argmax(q_table[state,:])        
+        action = np.argmax(q_table[state,:])
         new_state, reward, done, info = env.step(action)
-        
+
         if done:
             clear_output(wait=True)
             env.render()
